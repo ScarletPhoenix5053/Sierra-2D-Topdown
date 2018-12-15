@@ -4,6 +4,7 @@ using System;
 
 namespace Sierra.Unity2D.TopDown
 {
+    [RequireComponent(typeof(Collider))]
     public class Health : MonoBehaviour
     {
         public int Hp = 10;

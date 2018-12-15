@@ -17,6 +17,9 @@ namespace Sierra.Unity2D.TopDown
         protected void Awake()
         {
             _collider = GetComponent<Collider>();
+
+            // Ensure collider is not active when instance is spawned.
+            _collider.enabled = false;
         }
         protected void Update()
         {
