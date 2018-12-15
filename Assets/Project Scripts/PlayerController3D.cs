@@ -4,31 +4,36 @@ using UnityEngine;
 
 namespace Sierra.Unity2D.TopDown
 {
+    [RequireComponent(typeof(AttackManager))]
     [RequireComponent(typeof(MotionController3D))]
     public class PlayerController3D : MonoBehaviour
     {
         [ReadOnly]
-        public bool Attacking;
-        [ReadOnly]
         public Vector2 MoveInput;
 
         protected MotionController3D c_MotionController;
+        protected AttackManager c_AttackManager;
 
         protected virtual void Awake()
         {
             c_MotionController = GetComponent<MotionController3D>();
+            c_AttackManager = GetComponent<AttackManager>();
+
+            if (c_AttackManager == null ||
+                c_MotionController == null)
+            {
+                throw new MissingComponentException(name + " is missing an essential component!");
+            }
         }
         protected virtual void FixedUpdate()
         {
-            // Get input
-            GetDirectionalInput();
-
             // Call movement method
             c_MotionController.ResetVelocity();
             c_MotionController.MoveInDirection(MoveInput);
         }
         protected void Update()
         {
+            // Get input
             GetDirectionalInput();
             GetActionInput();
         }
@@ -56,29 +61,12 @@ namespace Sierra.Unity2D.TopDown
         }
         private void GetActionInput()
         {
-            if (!Attacking)
+            if (Input.GetKeyDown(KeyCode.Q))
             {
-
-            }
-            else
-            {
-
+                c_AttackManager.Attack();
             }
         }
 
-        private IEnumerator IE_Attack(AttackData data)
-        {
-            Attacking = true;
-            yield return new WaitForSeconds(Utility.FramesToSeconds(data.Startup));
-            
-            data.Hitbox.ActivateHitBox(data);
-            yield return new WaitForSeconds(Utility.FramesToSeconds(data.Active));
-
-            data.Hitbox.DeactivateHitBox();
-            yield return new WaitForSeconds(Utility.FramesToSeconds(data.Recovery));
-
-            Attacking = false;
-        }
         #endregion
     }
     [Serializable]
