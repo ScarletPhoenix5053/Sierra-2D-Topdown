@@ -8,8 +8,6 @@ namespace Sierra.Unity2D.TopDown
     {
         public int Hp = 10;
         public int HpMax = 10;
-        public int Weight = 1;
-        public bool AffectedByKnockback = false;
 
         [Serializable]
         public class OnDamageEvent : UnityEvent { };
@@ -18,13 +16,16 @@ namespace Sierra.Unity2D.TopDown
         public class OnDeathEvent : UnityEvent { };
         public OnDeathEvent OnDeath = new OnDeathEvent();
 
-        protected Rigidbody _rb;
-
         public AttackData PreviousHitData { get; private set; }
+        public bool Dead { get { return Hp <= 0; } }
 
         private void Awake()
         {
-            _rb = GetComponent<Rigidbody>();
+
+        }
+        private void Update()
+        {
+
         }
 
         /// <summary>
@@ -50,15 +51,40 @@ namespace Sierra.Unity2D.TopDown
             Kill();
         }
         /// <summary>
-        /// Remove HP and store additional information in <see cref="PreviousHitData"/>.
+        /// Removes HP and stores additional information in <see cref="PreviousHitData"/>.
+        /// Will call <see cref="OnDamage"/>.
+        /// Does not work if instance is <see cref="Dead"/>.
         /// </summary>
         /// <param name="hitInfo"></param>
         public void RemoveHp(AttackData data)
         {
+            // log error and return if dead
+            if (Dead)
+            {
+                Debug.LogError(name + " is already dead");
+                return;
+            }
+
+            // Assign data and adjust hp
             PreviousHitData = data;
             if (data.Damage != 0) Hp -= Convert.ToInt16(data.Damage);
-            if (Hp <= 0) OnDeath.Invoke();
+
+            // Call events
             OnDamage.Invoke();
+            if (Dead)
+            {
+                Hp = 0;
+                OnDeath.Invoke();
+            }
+        }
+
+        public void LogHp()
+        {
+            Debug.Log(name + ": " + Hp + "/ " + HpMax);
+        }
+        public void LogDeath()
+        {
+            Debug.Log(name + " is dead");
         }
     }
 }
