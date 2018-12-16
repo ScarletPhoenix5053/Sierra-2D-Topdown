@@ -22,7 +22,7 @@ namespace Sierra.Unity2D.TopDown
             if (c_AttackManager == null ||
                 c_MotionController == null)
             {
-                throw new MissingComponentException(name + " is missing an essential component!");
+                Utility.ThrowNoComponentException(name);
             }
         }
         protected virtual void FixedUpdate()
@@ -68,18 +68,5 @@ namespace Sierra.Unity2D.TopDown
         }
 
         #endregion
-    }
-    [Serializable]
-    public class AttackData
-    {
-        public Hitbox Hitbox;
-        public float Damage = 1;
-        public float KnockUp = 0;
-        public float KnockBack = 0;
-        public int Startup = 6;
-        public int Active = 1;
-        public int Recovery = 8;
-        public int Hitstun = 20;
-        public int Hitstop = 3;
     }
 }

@@ -1,10 +1,17 @@
 ﻿using UnityEngine;
 using System;
 
-static class Utility
+namespace Sierra
 {
-    public static float FramesToSeconds(int frames, int framesPerSecond = 60)
+    static class Utility
     {
-        return Convert.ToSingle(frames) / Convert.ToSingle(framesPerSecond);
+        public static float FramesToSeconds(int frames, int framesPerSecond = 60)
+        {
+            return Convert.ToSingle(frames) / Convert.ToSingle(framesPerSecond);
+        }
+        public static void ThrowNoComponentException(string name)
+        {
+            throw new MissingComponentException(name + " is missing an essential component!");
+        }
     }
 }

@@ -9,17 +9,25 @@ namespace Sierra.Unity2D.TopDown
     public class Hitbox : MonoBehaviour
     {
         public LayerMask LayerMask;
+        public bool UseAnimation;
 
-        protected Collider _collider;
+        protected Collider c_collider;
         protected List<Health> _checked;
         protected AttackData _data;
         
         protected void Awake()
         {
-            _collider = GetComponent<Collider>();
+            c_collider = GetComponent<Collider>();
+
+            // Check all essential refrences are set
+            if (
+                c_collider == null)
+            {
+                Utility.ThrowNoComponentException(name);
+            }
 
             // Ensure collider is not active when instance is spawned.
-            _collider.enabled = false;
+            c_collider.enabled = false;
         }
         protected void Update()
         {
@@ -30,14 +38,14 @@ namespace Sierra.Unity2D.TopDown
             CheckForTarget(other);
         }
 
-        public void ActivateHitBox(AttackData data)
+        public void ActivateHitBox(AttackData data)     
         {
-            _collider.enabled = true;
+            c_collider.enabled = true;
             _data = data;
         }
         public void DeactivateHitBox()
         {
-            _collider.enabled = false;
+            c_collider.enabled = false;
             _data = null;
         }
 
@@ -62,7 +70,7 @@ namespace Sierra.Unity2D.TopDown
         }
         protected void ResetColliderWhenInactive()
         {
-            if (!_collider.enabled && _checked != null) _checked = null;
+            if (!c_collider.enabled && _checked != null) _checked = null;
         }
     }
 }
