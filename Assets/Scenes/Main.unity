@@ -740,43 +740,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1827319191}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e3521182e105e049baec7703e20ea1f, type: 3}
+  m_Script: {fileID: 11500000, guid: 13595f236e990934f83da4130b839c1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Hp: 10
-  HpMax: 10
-  OnDamage:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1827319192}
-        m_MethodName: LogHp
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: Sierra.Unity2D.TopDown.Health+OnDamageEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnDeath:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1827319192}
-        m_MethodName: LogDeath
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: Sierra.Unity2D.TopDown.Health+OnDeathEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!114 &1827319193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -788,19 +754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eda8ab91c7ce20846b9c29cdd871081d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data:
-    Startup: 6
-    Active: 1
-    Recovery: 8
-    Damage: 1
-    KnockUp: 0
-    KnockBack: 0
-    Hitstun: 20
-    Hitstop: 3
-    Hitbox: {fileID: 0}
-    AnimationComponent: {fileID: 0}
-    AnimationName: 
-    UseAnimation: 0
+  InputManager: {fileID: 0}
 --- !u!4 &1827319194
 Transform:
   m_ObjectHideFlags: 0

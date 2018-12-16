@@ -9,6 +9,10 @@ namespace Sierra
         {
             return Convert.ToSingle(frames) / Convert.ToSingle(framesPerSecond);
         }
+        /// <summary>
+        /// Use to throw an exception when a monobehaviour is missing an essential component.
+        /// </summary>
+        /// <param name="name">Name of the <see cref="MonoBehaviour"/></param>
         public static void ThrowNoComponentException(string name)
         {
             throw new MissingComponentException(name + " is missing an essential component!");

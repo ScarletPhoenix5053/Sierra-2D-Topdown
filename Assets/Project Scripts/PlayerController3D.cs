@@ -39,7 +39,29 @@ namespace Sierra.Unity2D.TopDown
         }
 
         #region Private Methods
+        /// <summary>
+        /// Set <see cref="MoveInput"/> based on either keyboard or left stick controller input. Currently defaults to controller exclusivle input.
+        /// </summary>
         private void GetDirectionalInput()
+        {
+            if (GameManager.Instance.InputManager.ControllerConnected)
+            {
+                MoveInput = GetControllerLeftStickAxis();
+            }
+            else
+            {
+                MoveInput = GetWasdAxis();
+            }
+
+        }
+        private void GetActionInput()
+        {
+            if (GameManager.Instance.InputManager.Attack1)
+            {
+                c_AttackManager.Attack();
+            }
+        }
+        private Vector2 GetWasdAxis()
         {
             var w = Input.GetKey(KeyCode.W);
             var a = Input.GetKey(KeyCode.A);
@@ -57,14 +79,20 @@ namespace Sierra.Unity2D.TopDown
                 if (w) moveInput.y = 1;
                 else if (s) moveInput.y = -1;
             }
-            MoveInput = moveInput;
+
+            return moveInput;
         }
-        private void GetActionInput()
+        /// <summary>
+        /// Returns a normalized Vector2 based on controller left stick inputs.
+        /// </summary>
+        /// <returns></returns>
+        private Vector2 GetControllerLeftStickAxis()
         {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                c_AttackManager.Attack();
-            }
+            var x = Input.GetAxis("ControllerHorizontal");
+            var y = Input.GetAxis("ControllerVertical");
+            var moveInput = new Vector2(x, y).normalized;
+
+            return moveInput;
         }
 
         #endregion
