@@ -10,10 +10,37 @@ namespace Sierra.Unity2D.TopDown
     /// </summary>
     public class AttackManager : MonoBehaviour
     {
-        [ReadOnly]
-        public bool Attacking;
+        [ReadOnly] public bool Attacking;
+        [ReadOnly] public AttackData CurrentAttack = null;
+
         public List<AttackData> Attacks;
-        
+        public List<AttackData> CanChainInto
+        {
+            get
+            {
+                var chainable = new List<AttackData>();
+
+                // Go through all attacks
+                foreach (AttackData attack in Attacks)
+                {
+                    // Check name with chianable strings
+                    foreach (string name in CurrentAttack.ChainsInto)
+                    {
+                        // Add to new list if match
+                        if (name == attack.Name) chainable.Add(attack);
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        private void Awake()
+        {
+            // Ensure current attack is null.
+            CurrentAttack = null;
+        }
+
         /// <summary>
         /// Checks for an attack with the name provided. Throws an exception if a match is not found.
         /// </summary>
@@ -24,7 +51,9 @@ namespace Sierra.Unity2D.TopDown
             {
                 if (attackName.ToLower() == attack.Name.ToLower())
                 {
-                    StartCoroutine(IE_Attack(attack));
+                    // Match found:
+                    CurrentAttack = attack;
+                    StartCoroutine(IE_Attack(attack));                    
                     return;
                 }
             }
@@ -35,39 +64,53 @@ namespace Sierra.Unity2D.TopDown
         {
             Attacking = true;
             attack.PlayAnimation();
+            attack.SetState(AttackData.AttackState.Startup);
             yield return new WaitForSeconds(Utility.FramesToSeconds(attack.Startup));
 
             attack.Hitbox.ActivateHitBox(attack);
+            attack.SetState(AttackData.AttackState.Active);
             yield return new WaitForSeconds(Utility.FramesToSeconds(attack.Active));
 
+            attack.SetState(AttackData.AttackState.Recovery);
             attack.Hitbox.DeactivateHitBox();
             yield return new WaitForSeconds(Utility.FramesToSeconds(attack.Recovery));
 
             Attacking = false;
+            CurrentAttack = null;
+            attack.SetState(AttackData.AttackState.Inactive);
         }
     }
     [Serializable]
     public class AttackData
     {
         #region Public Vars
-        public string Name = "new attack";
+        public string Name = "none";
+        public AttackState State = AttackState.Inactive;
 
-        public int Startup = 6;
-        public int Active = 1;
-        public int Recovery = 8;
+        public int Startup;
+        public int Active ;
+        public int Recovery ;
 
-        public float Damage = 1;
-        public float KnockUp = 0;
-        public float KnockBack = 0;
+        public float Damage;
+        public float KnockUp;
+        public float KnockBack;
 
-        public int Hitstun = 20;
-        public int Hitstop = 3;
+        public int Hitstun;
+        public int Hitstop;
 
         public Hitbox Hitbox;
         public Animation AnimationComponent;
         public string AnimationName;
         public bool UseAnimation;
+
+        public bool AllowChaining = false;
+        public string[] ChainsInto;
         #endregion
+
+        public enum AttackState
+        {
+            Inactive, Startup, Active, Recovery
+        }
 
         /// <summary>
         /// Will not work if <see cref="UseAnimation"/> is false.
@@ -78,6 +121,10 @@ namespace Sierra.Unity2D.TopDown
             {
                 AnimationComponent.Play(AnimationName);
             }
+        }
+        public void SetState(AttackState newState)
+        {
+            State = newState;
         }
     }
 }

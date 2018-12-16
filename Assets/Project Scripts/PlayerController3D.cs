@@ -45,25 +45,13 @@ namespace Sierra.Unity2D.TopDown
         private void GetDirectionalInput()
         {
             if (GameManager.Instance.InputManager.ControllerConnected)
-            {
                 MoveInput = GetControllerLeftStickAxis();
-            }
             else
-            {
                 MoveInput = GetWasdAxis();
-            }
-
         }
         private void GetActionInput()
-        {
-            if (GameManager.Instance.InputManager.Attack1)
-            {
-                c_AttackManager.Attack("swing");
-            }
-            if (GameManager.Instance.InputManager.Attack2)
-            {
-                c_AttackManager.Attack("swingback");
-            }
+        {            
+            CheckAttackButtons();
         }
         private Vector2 GetWasdAxis()
         {
@@ -98,7 +86,25 @@ namespace Sierra.Unity2D.TopDown
 
             return moveInput;
         }
-
+        /// <summary>
+        /// Checks Inputmanger and performs attacks if any inputs are registered. 
+        /// Returns once an input returns true, so only one attack is ever called.
+        /// Does not operate if attackmanager is already performing an attack.
+        /// </summary>
+        private void CheckAttackButtons()
+        {
+            if (c_AttackManager.Attacking) return;
+            if (GameManager.Instance.InputManager.Attack1)
+            {
+                c_AttackManager.Attack("swing");
+                return;
+            }
+            if (GameManager.Instance.InputManager.Attack2)
+            {
+                c_AttackManager.Attack("swingback");
+                return;
+            }
+        }
         #endregion
     }
 }

@@ -249,6 +249,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Attacking: 0
+  CurrentAttack:
+    Name: new attack
+    Startup: 6
+    Active: 1
+    Recovery: 8
+    Damage: 1
+    KnockUp: 0
+    KnockBack: 0
+    Hitstun: 20
+    Hitstop: 3
+    Hitbox: {fileID: 0}
+    AnimationComponent: {fileID: 0}
+    AnimationName: 
+    UseAnimation: 0
+    AllowChaining: 0
+    ChainsInto: []
   Attacks:
   - Name: swing
     Startup: 6
@@ -263,6 +279,9 @@ MonoBehaviour:
     AnimationComponent: {fileID: 346721736}
     AnimationName: Swing
     UseAnimation: 1
+    AllowChaining: 1
+    ChainsInto:
+    - swingback
   - Name: swingback
     Startup: 4
     Active: 2
@@ -276,6 +295,8 @@ MonoBehaviour:
     AnimationComponent: {fileID: 346721736}
     AnimationName: SwingBack
     UseAnimation: 1
+    AllowChaining: 0
+    ChainsInto: []
 --- !u!1 &206324385
 GameObject:
   m_ObjectHideFlags: 0
@@ -444,7 +465,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 120238659}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 7.1960006}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -230.664}
 --- !u!65 &346721733
 BoxCollider:
   m_ObjectHideFlags: 0
