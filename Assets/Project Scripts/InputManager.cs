@@ -14,6 +14,7 @@ public class InputManager : MonoBehaviour
     [ReadOnly] public int ControllersConnected = 0;
 
     public bool Attack1 {  get { return Input.GetKeyDown(KeyCode.JoystickButton2); } }
+    public bool Attack2 {  get { return Input.GetKeyDown(KeyCode.JoystickButton3); } }
 
     private void Awake()
     {

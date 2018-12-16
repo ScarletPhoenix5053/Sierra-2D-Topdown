@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Sierra.Unity2D.TopDown
 {
@@ -11,24 +12,36 @@ namespace Sierra.Unity2D.TopDown
     {
         [ReadOnly]
         public bool Attacking;
-        public AttackData Data;
-
-        public void Attack()
+        public List<AttackData> Attacks;
+        
+        /// <summary>
+        /// Checks for an attack with the name provided. Throws an exception if a match is not found.
+        /// </summary>
+        /// <param name="attackName"></param>
+        public void Attack(string attackName)
         {
-            StartCoroutine(IE_Attack());
+            foreach (AttackData attack in Attacks)
+            {
+                if (attackName.ToLower() == attack.Name.ToLower())
+                {
+                    StartCoroutine(IE_Attack(attack));
+                    return;
+                }
+            }
+            throw new MissingReferenceException(attackName + " could not be found in " + name + "'s attack method list.");
         }
-
-        private IEnumerator IE_Attack()
+        
+        private IEnumerator IE_Attack(AttackData attack)
         {
             Attacking = true;
-            Data.PlayAnimation();
-            yield return new WaitForSeconds(Utility.FramesToSeconds(Data.Startup));
+            attack.PlayAnimation();
+            yield return new WaitForSeconds(Utility.FramesToSeconds(attack.Startup));
 
-            Data.Hitbox.ActivateHitBox(Data);
-            yield return new WaitForSeconds(Utility.FramesToSeconds(Data.Active));
+            attack.Hitbox.ActivateHitBox(attack);
+            yield return new WaitForSeconds(Utility.FramesToSeconds(attack.Active));
 
-            Data.Hitbox.DeactivateHitBox();
-            yield return new WaitForSeconds(Utility.FramesToSeconds(Data.Recovery));
+            attack.Hitbox.DeactivateHitBox();
+            yield return new WaitForSeconds(Utility.FramesToSeconds(attack.Recovery));
 
             Attacking = false;
         }
@@ -37,6 +50,8 @@ namespace Sierra.Unity2D.TopDown
     public class AttackData
     {
         #region Public Vars
+        public string Name = "new attack";
+
         public int Startup = 6;
         public int Active = 1;
         public int Recovery = 8;

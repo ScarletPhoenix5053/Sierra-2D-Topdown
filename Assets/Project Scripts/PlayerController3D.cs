@@ -58,7 +58,11 @@ namespace Sierra.Unity2D.TopDown
         {
             if (GameManager.Instance.InputManager.Attack1)
             {
-                c_AttackManager.Attack();
+                c_AttackManager.Attack("swing");
+            }
+            if (GameManager.Instance.InputManager.Attack2)
+            {
+                c_AttackManager.Attack("swingback");
             }
         }
         private Vector2 GetWasdAxis()

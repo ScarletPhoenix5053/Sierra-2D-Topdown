@@ -249,18 +249,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Attacking: 0
-  Data:
+  Attacks:
+  - Name: swing
     Startup: 6
     Active: 4
     Recovery: 10
     Damage: 1
     KnockUp: 0
     KnockBack: 0
-    Hitstun: 20
-    Hitstop: 3
+    Hitstun: 0
+    Hitstop: 0
     Hitbox: {fileID: 1136608633}
     AnimationComponent: {fileID: 346721736}
     AnimationName: Swing
+    UseAnimation: 1
+  - Name: swingback
+    Startup: 4
+    Active: 2
+    Recovery: 14
+    Damage: 1
+    KnockUp: 0
+    KnockBack: 0
+    Hitstun: 0
+    Hitstop: 0
+    Hitbox: {fileID: 1136608633}
+    AnimationComponent: {fileID: 346721736}
+    AnimationName: SwingBack
     UseAnimation: 1
 --- !u!1 &206324385
 GameObject:
@@ -430,7 +444,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 120238659}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -167.58873}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 7.1960006}
 --- !u!65 &346721733
 BoxCollider:
   m_ObjectHideFlags: 0
