@@ -430,7 +430,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 120238659}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -297.241}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -167.58873}
 --- !u!65 &346721733
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -496,6 +496,7 @@ Animation:
   m_Animation: {fileID: 0}
   m_Animations:
   - {fileID: 7400000, guid: d52b9e6765d6ba14a94bf6ed0b001d37, type: 2}
+  - {fileID: 7400000, guid: 622f43b503ca3f644ac2af3aab5f80cc, type: 2}
   m_WrapMode: 1
   m_PlayAutomatically: 0
   m_AnimatePhysics: 1
@@ -743,6 +744,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13595f236e990934f83da4130b839c1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DebugLocal:
+    LogControllers: 1
+  ControllerConnected: 0
+  ControllersConnected: 0
 --- !u!114 &1827319193
 MonoBehaviour:
   m_ObjectHideFlags: 0

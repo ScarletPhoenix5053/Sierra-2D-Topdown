@@ -59,10 +59,10 @@ namespace Sierra.Unity2D.TopDown
         /// <param name="hitInfo"></param>
         public void RemoveHp(AttackData data)
         {
-            // log error and return if dead
+            // log warning and return if dead
             if (Dead)
             {
-                Debug.LogError(name + " is already dead");
+                Debug.LogWarning(name + " is already dead");
                 return;
             }
 
