@@ -9,6 +9,7 @@ namespace Sierra.Unity2D.InputManagement
         protected InputData _inputData;
         protected Device _device = Device.KeyboardAndMouse;
         protected KeyType kb_keyType = KeyType.None;
+        protected Vector2 _scroll;
 
         public override void OnInspectorGUI()
         {
@@ -28,9 +29,10 @@ namespace Sierra.Unity2D.InputManagement
                 case Device.Controller:
                     break;
                 case Device.KeyboardAndMouse:
-                    kb_Render_Header();
-                    kb_Render_Selection_KeyType();
-                    kb_Fork_ByKey();
+                    kb_Render_Header();/*
+                    kb_Render_LeftHandLetters();
+                    kb_Render_RightHandLetters();*/
+                    kb_Render_AllLetters();
                     break;
                 default:
                     break;
@@ -44,96 +46,158 @@ namespace Sierra.Unity2D.InputManagement
             GUILayout.EndHorizontal();
         }
 
-        protected void kb_Fork_ByKey()
-        {
-            switch (kb_keyType)
-            {
-                case KeyType.None:
-                    kb_Render_Key_None();
-                    break;
-                case KeyType.Number:
-                    kb_Render_Key_Number();
-                    break;
-                case KeyType.Letter:
-                    kb_Render_Key_Letter();
-                    break;
-                case KeyType.function:
-                    kb_Render_Key_Function();
-                    break;
-                case KeyType.SpecialCharacter:
-                    kb_Render_Key_SpecialCharacter();
-                    break;
-                case KeyType.Command:
-                    kb_Render_Key_Command();
-                    break;
-                default:
-                    break;
-            }
-        }
-        protected void kb_Render_Selection_KeyType()
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Key Type");
-            kb_keyType = (KeyType)EditorGUILayout.EnumPopup(kb_keyType);
-            GUILayout.EndHorizontal();
-        }
         protected void kb_Render_Header()
         {
             GUILayout.Label("Checking keyboard and mouse controls");
         }
-        protected void kb_Render_Key_Number()
+        protected void kb_Render_LeftHandLetters()
         {
-            GUILayout.Label("Please select a Key Type");
-        }
-        protected void kb_Render_Key_Letter()
-        {
-            GUILayout.Label("Please select a Key Type");
-        }
-        protected void kb_Render_Key_SpecialCharacter()
-        {
-            GUILayout.Label("Please select a Key Type");
-        }
-        protected void kb_Render_Key_Command()
-        {
-            GUILayout.Label("Please select a Key Type");
-        }
-        protected void kb_Render_Key_Function()
-        {
+            var buttonSize = new Vector2(22, 22);
+            var leftSpace = 6f;
+
             GUILayout.BeginVertical();
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            Render_ButtonForKey("F1", KeyCode.F1);
-            Render_ButtonForKey("F2", KeyCode.F2);
-            Render_ButtonForKey("F3", KeyCode.F3);
-            Render_ButtonForKey("F5", KeyCode.F4);
-            Render_ButtonForKey("F5", KeyCode.F5);
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            Render_ButtonForKey("F6", KeyCode.F6);
-            Render_ButtonForKey("F7", KeyCode.F7);
-            Render_ButtonForKey("F8", KeyCode.F8);
-            Render_ButtonForKey("F9", KeyCode.F9);
-            Render_ButtonForKey("F10", KeyCode.F10);
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            Render_ButtonForKey("F10", KeyCode.F10);
-            Render_ButtonForKey("F11", KeyCode.F11);
-            Render_ButtonForKey("F12", KeyCode.F12);
-            Render_ButtonForKey("F13", KeyCode.F13);
-            Render_ButtonForKey("F14", KeyCode.F14);
-            GUILayout.EndHorizontal();
+                    GUILayout.Label("Left Hand Letters");
+
+                GUILayout.BeginHorizontal();
+                    GUILayout.Space(leftSpace);
+                    Render_ButtonForKey("Q", KeyCode.Q, buttonSize);
+                    Render_ButtonForKey("W", KeyCode.W, buttonSize);
+                    Render_ButtonForKey("E", KeyCode.E, buttonSize);
+                    Render_ButtonForKey("R", KeyCode.R, buttonSize);
+                    Render_ButtonForKey("T", KeyCode.T, buttonSize);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                    GUILayout.Space(leftSpace*2);
+                    Render_ButtonForKey("A", KeyCode.A, buttonSize);
+                    Render_ButtonForKey("S", KeyCode.S, buttonSize);
+                    Render_ButtonForKey("D", KeyCode.D, buttonSize);
+                    Render_ButtonForKey("F", KeyCode.F, buttonSize);
+                    Render_ButtonForKey("G", KeyCode.G, buttonSize);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                    GUILayout.Space(leftSpace*3);
+                    Render_ButtonForKey("Z", KeyCode.Z, buttonSize);
+                    Render_ButtonForKey("X", KeyCode.X, buttonSize);
+                    Render_ButtonForKey("C", KeyCode.C, buttonSize);
+                    Render_ButtonForKey("V", KeyCode.V, buttonSize);
+                    Render_ButtonForKey("B", KeyCode.B, buttonSize);
+                GUILayout.EndHorizontal();
+
             GUILayout.EndVertical();
         }
-        protected void kb_Render_Key_None()
+        protected void kb_Render_RightHandLetters()
         {
-            GUILayout.Label("Please select a Key Type");
+            var buttonSize = new Vector2(22, 22);
+            var leftSpace = 6f;
+
+            GUILayout.BeginVertical();
+                GUILayout.Label("Right Hand Letters");
+
+                GUILayout.BeginHorizontal();
+                    GUILayout.Space(leftSpace);
+                    Render_ButtonForKey("Y", KeyCode.Y, buttonSize);
+                    Render_ButtonForKey("U", KeyCode.U, buttonSize);
+                    Render_ButtonForKey("I", KeyCode.I, buttonSize);
+                    Render_ButtonForKey("O", KeyCode.O, buttonSize);
+                    Render_ButtonForKey("P", KeyCode.P, buttonSize);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                    GUILayout.Space(leftSpace * 2);
+                    Render_ButtonForKey("H", KeyCode.H, buttonSize);
+                    Render_ButtonForKey("J", KeyCode.J, buttonSize);
+                    Render_ButtonForKey("K", KeyCode.K, buttonSize);
+                    Render_ButtonForKey("L", KeyCode.L, buttonSize);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                    GUILayout.Space(leftSpace * 3);
+                    Render_ButtonForKey("Z", KeyCode.Z, buttonSize);
+                    Render_ButtonForKey("M", KeyCode.M, buttonSize);
+                GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
+        }
+        protected void kb_Render_AllLetters()
+        {
+            var buttonSize = new Vector2(22, 22);
+            var leftSpace = 6f;
+
+            _scroll = GUILayout.BeginScrollView(_scroll, GUILayout.Height(100));
+            GUILayout.BeginVertical();
+                    GUILayout.Label("Left Hand Letters");
+
+                GUILayout.BeginHorizontal();
+                    GUILayout.Space(leftSpace);
+                    Render_ButtonForKey("Q", KeyCode.Q, buttonSize);
+                    Render_ButtonForKey("W", KeyCode.W, buttonSize);
+                    Render_ButtonForKey("E", KeyCode.E, buttonSize);
+                    Render_ButtonForKey("R", KeyCode.R, buttonSize);
+                    Render_ButtonForKey("T", KeyCode.T, buttonSize);
+                    Render_ButtonForKey("Y", KeyCode.Y, buttonSize);
+                    Render_ButtonForKey("U", KeyCode.U, buttonSize);
+                    Render_ButtonForKey("I", KeyCode.I, buttonSize);
+                    Render_ButtonForKey("O", KeyCode.O, buttonSize);
+                    Render_ButtonForKey("P", KeyCode.P, buttonSize);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                    GUILayout.Space(leftSpace*2);
+                    Render_ButtonForKey("A", KeyCode.A, buttonSize);
+                    Render_ButtonForKey("S", KeyCode.S, buttonSize);
+                    Render_ButtonForKey("D", KeyCode.D, buttonSize);
+                    Render_ButtonForKey("F", KeyCode.F, buttonSize);
+                    Render_ButtonForKey("G", KeyCode.G, buttonSize);
+                    Render_ButtonForKey("H", KeyCode.H, buttonSize);
+                    Render_ButtonForKey("J", KeyCode.J, buttonSize);
+                    Render_ButtonForKey("K", KeyCode.K, buttonSize);
+                    Render_ButtonForKey("L", KeyCode.L, buttonSize);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                    GUILayout.Space(leftSpace*3);
+                    Render_ButtonForKey("Z", KeyCode.Z, buttonSize);
+                    Render_ButtonForKey("X", KeyCode.X, buttonSize);
+                    Render_ButtonForKey("C", KeyCode.C, buttonSize);
+                    Render_ButtonForKey("V", KeyCode.V, buttonSize);
+                    Render_ButtonForKey("B", KeyCode.B, buttonSize);
+                    Render_ButtonForKey("Z", KeyCode.Z, buttonSize);
+                    Render_ButtonForKey("M", KeyCode.M, buttonSize);
+                GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
+            GUILayout.EndScrollView();
         }
 
-        protected void Render_ButtonForKey(string buttonName, KeyCode key)
+        protected void Render_ButtonForKey(
+            string buttonName,
+            KeyCode key)
         {
-            if (GUILayout.Button(buttonName,GUILayout.MaxWidth(30f))) _inputData.KeyCode = key;
+            if (GUILayout.Button(buttonName)) _inputData.KeyCode = key;
+        }
+        protected void Render_ButtonForKey(
+           string buttonName,
+           KeyCode key,
+           Vector2 absoluteSize)
+        {
+            var style = GUI.skin.button;
+            style.padding = new RectOffset(1, 1, 1, 1);
+            style.alignment = TextAnchor.UpperCenter;
+
+            if (GUILayout.Button(
+                buttonName,
+                style,
+                GUILayout.Height(absoluteSize.y),
+                GUILayout.Width(absoluteSize.x)
+                ))
+                _inputData.KeyCode = key;
+        }
+
+        protected enum ElementFlexebility
+        {
+            rigid, flexibleHeight, flexibleWidth, flexible
         }
     }
 }
