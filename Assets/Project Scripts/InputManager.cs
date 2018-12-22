@@ -13,6 +13,7 @@ public class InputManager : MonoBehaviour
         public bool LogControllers = true;
     }
     public InputData Input1;
+    public InputData[] Inputs;
 
     [ReadOnly] public bool ControllerConnected = false;
     [ReadOnly] public int ControllersConnected = 0;
@@ -20,11 +21,29 @@ public class InputManager : MonoBehaviour
     public bool Attack1 {  get { return Input.GetKeyDown(KeyCode.JoystickButton2); } }
     public bool Attack2 {  get { return Input.GetKeyDown(KeyCode.JoystickButton3); } }
     public bool Attack3 {  get { return Input1.CheckKey(); } }
+    public bool W {  get { return Inputs[0].CheckKey(); } }
+    public bool A {  get { return Inputs[1].CheckKey(); } }
+    public bool S {  get { return Inputs[2].CheckKey(); } }
+    public bool D {  get { return Inputs[3].CheckKey(); } }
 
     private void Awake()
     {
         DoSingletonCheck();
         CheckControllers();
+    }
+    private void OnGUI()
+    {
+        DoSingletonCheck();
+    }
+
+    public KeyCode[] GetUsedKeyCodes()
+    {
+        KeyCode[] keyCodes = new KeyCode[Inputs.Length];
+        for (int i = 0; i < Inputs.Length; i++)
+        {
+            keyCodes[i] = Inputs[i].KeyCode;
+        }
+        return keyCodes;
     }
 
     private void CheckControllers()

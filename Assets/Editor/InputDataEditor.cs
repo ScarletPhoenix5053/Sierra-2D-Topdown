@@ -7,18 +7,15 @@ namespace Sierra.Unity2D.InputManagement
 {
     [CustomEditor(typeof(InputData))]
     public class InputDataEditor : Editor
-    {
-        
+    {        
         protected bool kb_checkForKeyOnPress = false;
-        protected bool _initialMouseClick = true;
         protected Device _device = Device.KeyboardAndMouse;
         protected Vector2 _scroll;
         protected InputData _inputData;
 
         protected int kb_inputWindowFrames = 5;
         protected int kb_timer_inputWindow = 0;
-        protected KeyType kb_keyType = KeyType.None;
-        protected KeyCode kb_keyCode = KeyCode.None;
+
 
         public override void OnInspectorGUI()
         {
@@ -30,37 +27,6 @@ namespace Sierra.Unity2D.InputManagement
             Fork_ByDevice();
         }
 
-        /// <summary>
-        /// Waits for the user to press a key, and sets <see cref="_inputData"/>'s <see cref="KeyCode"/> to match.
-        /// Will only work for keyboard.
-        /// </summary>
-        protected void kb_GetKeyOnPress()
-        {
-            // Initialize
-            var foundKey = false;
-
-            // Check for input
-            foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
-            {
-                // Ignore the following:
-                if (Event.current.keyCode == KeyCode.None) continue;
-
-                // Store Keycode on match
-                if (Event.current.keyCode == keyCode)
-                {
-                    _inputData.KeyCode = keyCode;
-                    Log_SettingKeyCodeTo(keyCode.ToString());
-                    if (!foundKey) foundKey = true;
-                }
-            }
-
-            // Keep checking untill a key is found
-            if (!foundKey) return;
-
-            // Reset the method
-            kb_checkForKeyOnPress = false;
-            _initialMouseClick = true;
-        }
 
         protected void Fork_ByDevice()
         {
@@ -83,13 +49,6 @@ namespace Sierra.Unity2D.InputManagement
             GUILayout.BeginHorizontal();
             GUILayout.Label("Device Type");
             _device = (Device)EditorGUILayout.EnumPopup(_device);
-            GUILayout.EndHorizontal();
-        }
-        protected void kb_Render_PressAnyKey()
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Click here to set input");
-            if (GUILayout.Button("")) kb_checkForKeyOnPress = true;
             GUILayout.EndHorizontal();
         }
         /// <summary>
@@ -119,6 +78,9 @@ namespace Sierra.Unity2D.InputManagement
             var style = GUI.skin.button;
             style.padding = new RectOffset(1, 1, 1, 1);
             style.alignment = TextAnchor.UpperCenter;
+
+            // Check if button is already used by an input
+            var usedKeyCodes = InputManager.Instance.GetUsedKeyCodes();
 
             // Render and check button
             if (GUILayout.Button(
@@ -342,6 +304,43 @@ namespace Sierra.Unity2D.InputManagement
 
             GUILayout.EndVertical();
             GUILayout.EndScrollView();
+        }
+        protected void kb_Render_PressAnyKey()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Click here to set input");
+            if (GUILayout.Button("")) kb_checkForKeyOnPress = true;
+            GUILayout.EndHorizontal();
+        }
+        /// <summary>
+         /// Waits for the user to press a key, and sets <see cref="_inputData"/>'s <see cref="KeyCode"/> to match.
+         /// Will only work for keyboard.
+         /// </summary>
+        protected void kb_GetKeyOnPress()
+        {
+            // Initialize
+            var foundKey = false;
+
+            // Check for input
+            foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
+            {
+                // Ignore the following:
+                if (Event.current.keyCode == KeyCode.None) continue;
+
+                // Store Keycode on match
+                if (Event.current.keyCode == keyCode)
+                {
+                    _inputData.KeyCode = keyCode;
+                    Log_SettingKeyCodeTo(keyCode.ToString());
+                    if (!foundKey) foundKey = true;
+                }
+            }
+
+            // Keep checking untill a key is found
+            if (!foundKey) return;
+
+            // Reset the method
+            kb_checkForKeyOnPress = false;
         }
     }
 }

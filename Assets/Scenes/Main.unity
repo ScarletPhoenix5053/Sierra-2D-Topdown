@@ -785,6 +785,12 @@ MonoBehaviour:
   DebugLocal:
     LogControllers: 1
   Input1: {fileID: 11400000, guid: 1ac4b4fedaa7b324da5cb8c1790f4725, type: 2}
+  Inputs:
+  - {fileID: 11400000, guid: 0561dfa27ae7daa4e96b8c13d5042c60, type: 2}
+  - {fileID: 11400000, guid: e7756a5ddc07d624a8bacb3462815516, type: 2}
+  - {fileID: 11400000, guid: 4612e8fd7652803428d3805f0c8224d0, type: 2}
+  - {fileID: 11400000, guid: 478e7178e4befeb49a61f16246f5d214, type: 2}
+  - {fileID: 11400000, guid: 1ac4b4fedaa7b324da5cb8c1790f4725, type: 2}
   ControllerConnected: 0
   ControllersConnected: 0
 --- !u!114 &1827319193
