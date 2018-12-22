@@ -5,7 +5,8 @@ namespace Sierra.Unity2D.InputManagement
     [CreateAssetMenu(fileName = "New Input", menuName = "Sierra/Input")]
     public class InputData : ScriptableObject
     {
-        public KeyCode KeyCode = KeyCode.Q;
+        public string Name = "New Input";
+        public KeyCode KeyCode = KeyCode.None;
 
         public bool CheckKey()
         {

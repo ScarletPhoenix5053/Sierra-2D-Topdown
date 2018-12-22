@@ -9,7 +9,8 @@ namespace Sierra.Unity2D.InputManagement
     public class InputDataEditor : Editor
     {
         
-        protected bool _checkAnyKeyCode = false;
+        protected bool kb_checkForKeyOnPress = false;
+        protected bool _initialMouseClick = true;
         protected Device _device = Device.KeyboardAndMouse;
         protected Vector2 _scroll;
         protected InputData _inputData;
@@ -25,17 +26,15 @@ namespace Sierra.Unity2D.InputManagement
 
             _inputData = (InputData)target;
 
-            Render_PressAnyKey();
-            if (_checkAnyKeyCode) GetAnyKeyCode();
             Render_Selection_Device();
             Fork_ByDevice();
         }
 
         /// <summary>
         /// Waits for the user to press a key, and sets <see cref="_inputData"/>'s <see cref="KeyCode"/> to match.
-        /// Should work with all devices as it checks all possible <see cref="KeyCode"/>s.
+        /// Will only work for keyboard.
         /// </summary>
-        protected void GetAnyKeyCode()
+        protected void kb_GetKeyOnPress()
         {
             // Initialize
             var foundKey = false;
@@ -44,7 +43,6 @@ namespace Sierra.Unity2D.InputManagement
             foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
             {
                 // Ignore the following:
-                if (Event.current.keyCode == KeyCode.Mouse0) continue;
                 if (Event.current.keyCode == KeyCode.None) continue;
 
                 // Store Keycode on match
@@ -60,7 +58,8 @@ namespace Sierra.Unity2D.InputManagement
             if (!foundKey) return;
 
             // Reset the method
-            _checkAnyKeyCode = false;
+            kb_checkForKeyOnPress = false;
+            _initialMouseClick = true;
         }
 
         protected void Fork_ByDevice()
@@ -70,7 +69,8 @@ namespace Sierra.Unity2D.InputManagement
                 case Device.Controller:
                     break;
                 case Device.KeyboardAndMouse:
-                    Render_PressAnyKey();
+                    kb_Render_PressAnyKey();
+                    if (kb_checkForKeyOnPress) kb_GetKeyOnPress();
                     kb_Render_Header();
                     kb_Render_FullKeyboard();
                     break;
@@ -85,13 +85,19 @@ namespace Sierra.Unity2D.InputManagement
             _device = (Device)EditorGUILayout.EnumPopup(_device);
             GUILayout.EndHorizontal();
         }
-        protected void Render_PressAnyKey()
+        protected void kb_Render_PressAnyKey()
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Click here to set input");
-            if (GUILayout.Button("")) _checkAnyKeyCode = true;
+            if (GUILayout.Button("")) kb_checkForKeyOnPress = true;
             GUILayout.EndHorizontal();
         }
+        /// <summary>
+        /// Renders a button, and sets <see cref="_inputData"/>'s <see cref="KeyCode"/>
+        /// to the provided keycode on button press.
+        /// </summary>
+        /// <param name="buttonName">Name to display on the button</param>
+        /// <param name="key">The <see cref="KeyCode"/> to set <see cref="_inputData"/> to</param>
         protected void Render_ButtonForKey(string buttonName, KeyCode key)
         {
             if (GUILayout.Button(buttonName))
@@ -100,12 +106,21 @@ namespace Sierra.Unity2D.InputManagement
                 _inputData.KeyCode = key;
             }
         }
+        /// <summary>
+        /// Renders a button at a fixed size, and sets <see cref="_inputData"/>'s <see cref="KeyCode"/>
+        /// to the provided keycode on button press.
+        /// </summary>
+        /// <param name="buttonName">Name to display on the button</param>
+        /// <param name="key">The <see cref="KeyCode"/> to set <see cref="_inputData"/> to</param>
+        /// <param name="absoluteSize">Size of the button</param>
         protected void Render_ButtonForKey(string buttonName, KeyCode key, Vector2 absoluteSize)
         {
+            // Initialize
             var style = GUI.skin.button;
             style.padding = new RectOffset(1, 1, 1, 1);
             style.alignment = TextAnchor.UpperCenter;
 
+            // Render and check button
             if (GUILayout.Button(
                 buttonName,
                 style,
@@ -113,6 +128,7 @@ namespace Sierra.Unity2D.InputManagement
                 GUILayout.Width(absoluteSize.x)
                 ))
             {
+                // Update KeyCode on button press
                 Log_SettingKeyCodeTo(key.ToString());
                 _inputData.KeyCode = key;
             }
