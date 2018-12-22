@@ -9,7 +9,7 @@ namespace Sierra.Unity2D.InputManagement
     public class InputDataEditor : Editor
     {
         
-        protected bool _checkAnyKbInput = false;
+        protected bool _checkAnyKeyCode = false;
         protected Device _device = Device.KeyboardAndMouse;
         protected Vector2 _scroll;
         protected InputData _inputData;
@@ -25,12 +25,43 @@ namespace Sierra.Unity2D.InputManagement
 
             _inputData = (InputData)target;
 
-            EditorGUILayout.Toggle(_checkAnyKbInput);
-
+            Render_PressAnyKey();
+            if (_checkAnyKeyCode) GetAnyKeyCode();
             Render_Selection_Device();
             Fork_ByDevice();
         }
 
+        /// <summary>
+        /// Waits for the user to press a key, and sets <see cref="_inputData"/>'s <see cref="KeyCode"/> to match.
+        /// Should work with all devices as it checks all possible <see cref="KeyCode"/>s.
+        /// </summary>
+        protected void GetAnyKeyCode()
+        {
+            // Initialize
+            var foundKey = false;
+
+            // Check for input
+            foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
+            {
+                // Ignore the following:
+                if (Event.current.keyCode == KeyCode.Mouse0) continue;
+                if (Event.current.keyCode == KeyCode.None) continue;
+
+                // Store Keycode on match
+                if (Event.current.keyCode == keyCode)
+                {
+                    _inputData.KeyCode = keyCode;
+                    Log_SettingKeyCodeTo(keyCode.ToString());
+                    if (!foundKey) foundKey = true;
+                }
+            }
+
+            // Keep checking untill a key is found
+            if (!foundKey) return;
+
+            // Reset the method
+            _checkAnyKeyCode = false;
+        }
 
         protected void Fork_ByDevice()
         {
@@ -39,11 +70,8 @@ namespace Sierra.Unity2D.InputManagement
                 case Device.Controller:
                     break;
                 case Device.KeyboardAndMouse:
-                    if (_checkAnyKbInput) kb_GetAnyKey();
-                    kb_Render_PressAnyKey();
-                    kb_Render_Header();/*
-                    kb_Render_LeftHandLetters();
-                    kb_Render_RightHandLetters();*/
+                    Render_PressAnyKey();
+                    kb_Render_Header();
                     kb_Render_FullKeyboard();
                     break;
                 default:
@@ -56,6 +84,42 @@ namespace Sierra.Unity2D.InputManagement
             GUILayout.Label("Device Type");
             _device = (Device)EditorGUILayout.EnumPopup(_device);
             GUILayout.EndHorizontal();
+        }
+        protected void Render_PressAnyKey()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Click here to set input");
+            if (GUILayout.Button("")) _checkAnyKeyCode = true;
+            GUILayout.EndHorizontal();
+        }
+        protected void Render_ButtonForKey(string buttonName, KeyCode key)
+        {
+            if (GUILayout.Button(buttonName))
+            {
+                Log_SettingKeyCodeTo(key.ToString());
+                _inputData.KeyCode = key;
+            }
+        }
+        protected void Render_ButtonForKey(string buttonName, KeyCode key, Vector2 absoluteSize)
+        {
+            var style = GUI.skin.button;
+            style.padding = new RectOffset(1, 1, 1, 1);
+            style.alignment = TextAnchor.UpperCenter;
+
+            if (GUILayout.Button(
+                buttonName,
+                style,
+                GUILayout.Height(absoluteSize.y),
+                GUILayout.Width(absoluteSize.x)
+                ))
+            {
+                Log_SettingKeyCodeTo(key.ToString());
+                _inputData.KeyCode = key;
+            }
+        }
+        protected void Log_SettingKeyCodeTo(string keyCode)
+        {
+            Debug.Log("Setting KeyCode to: " + keyCode);
         }
 
         protected void kb_Render_Header()
@@ -140,12 +204,14 @@ namespace Sierra.Unity2D.InputManagement
             var tabButtonSize = new Vector2(commandButtonSizeX + leftSpace, buttonSize.y);
             var capsButtonSize = new Vector2(commandButtonSizeX + leftSpace*2, buttonSize.y);
             var shiftButtonSize = new Vector2(commandButtonSizeX + 1+leftSpace*3, buttonSize.y);
-            var backSlashButtonSize = new Vector2(commandButtonSizeX, buttonSize.y);
             var enterButtonSize = new Vector2(commandButtonSizeX*2- leftSpace-1, buttonSize.y);
-            var backSpaceButtonSize = new Vector2(commandButtonSizeX*2- leftSpace, buttonSize.y);
+            var tildeButtonSize = new Vector2(buttonSize.x/2, buttonSize.y);
+            var backSpaceButtonSize = new Vector2(1+commandButtonSizeX*2, buttonSize.y);
+            var windowsButtonSize = new Vector2(commandButtonSizeX+3, buttonSize.y);
+            var spaceBarSize = new Vector2(120, buttonSize.y);
 
 
-            _scroll = GUILayout.BeginScrollView(_scroll, GUILayout.Height(500));
+            _scroll = GUILayout.BeginScrollView(_scroll, GUILayout.Height(165));
             GUILayout.BeginVertical();
                     GUILayout.Label("Full Keyboard");
             /*
@@ -170,7 +236,7 @@ namespace Sierra.Unity2D.InputManagement
 
                 // KEYBOARD NUM ROW
                 GUILayout.BeginHorizontal();
-                    Render_ButtonForKey("`", KeyCode.None, buttonSize);
+                    Render_ButtonForKey("`", KeyCode.BackQuote, tildeButtonSize);
                     Render_ButtonForKey("1", KeyCode.Alpha1, buttonSize);
                     Render_ButtonForKey("2", KeyCode.Alpha2, buttonSize);
                     Render_ButtonForKey("3", KeyCode.Alpha3, buttonSize);
@@ -241,71 +307,25 @@ namespace Sierra.Unity2D.InputManagement
                     Render_ButtonForKey("shift", KeyCode.RightShift, shiftButtonSize);
                 GUILayout.EndHorizontal();
 
+
+            // KEYBOARD SPACEBAR ROW
+                GUILayout.BeginHorizontal();
+                //GUILayout.Space(leftSpace*3);
+                    Render_ButtonForKey("ctrl", KeyCode.LeftControl, buttonSize);
+                    Render_ButtonForKey("fn", KeyCode.None, buttonSize);                    
+                    Render_ButtonForKey("start", KeyCode.LeftWindows, windowsButtonSize);                    
+                    Render_ButtonForKey("alt", KeyCode.LeftAlt, buttonSize);
+                    Render_ButtonForKey("", KeyCode.Space, spaceBarSize);                    
+                    Render_ButtonForKey("alt", KeyCode.RightAlt, buttonSize);
+                    Render_ButtonForKey("ctrl", KeyCode.RightControl, buttonSize);
+                    Render_ButtonForKey("<", KeyCode.LeftArrow, buttonSize);
+                    Render_ButtonForKey("\\/", KeyCode.DownArrow, buttonSize);
+                    Render_ButtonForKey(">", KeyCode.RightArrow, buttonSize);
+                    Render_ButtonForKey("fn", KeyCode.None, buttonSize);
+                GUILayout.EndHorizontal();
+
             GUILayout.EndVertical();
             GUILayout.EndScrollView();
-        }
-        protected void kb_Render_PressAnyKey()
-        {
-            GUILayout.BeginHorizontal();
-                GUILayout.Label("Click here to set input");
-                if (GUILayout.Button("")) _checkAnyKbInput = true;
-            GUILayout.EndHorizontal();
-        }
-        protected void kb_GetAnyKey()
-        {
-            // Initialize
-            var foundKey = false;
-
-            // Check for input
-            foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
-            {
-                // Ignore the following:
-                if (Event.current.keyCode == KeyCode.Mouse0) continue;
-                if (Event.current.keyCode == KeyCode.None) continue;
-
-                // Store Keycode on match
-                if (Event.current.keyCode == keyCode)
-                {
-                    _inputData.KeyCode = keyCode;
-                    Debug.Log("Setting KeyCode to: " + keyCode);
-                    if (!foundKey) foundKey = true;          
-                }
-            }
-
-            // Keep checking untill a key is found
-            if (!foundKey) return;
-
-            // Reset the method
-            _checkAnyKbInput = false;
-        }
-
-        protected void Render_ButtonForKey(
-            string buttonName,
-            KeyCode key)
-        {
-            if (GUILayout.Button(buttonName)) _inputData.KeyCode = key;
-        }
-        protected void Render_ButtonForKey(
-           string buttonName,
-           KeyCode key,
-           Vector2 absoluteSize)
-        {
-            var style = GUI.skin.button;
-            style.padding = new RectOffset(1, 1, 1, 1);
-            style.alignment = TextAnchor.UpperCenter;
-
-            if (GUILayout.Button(
-                buttonName,
-                style,
-                GUILayout.Height(absoluteSize.y),
-                GUILayout.Width(absoluteSize.x)
-                ))
-                _inputData.KeyCode = key;
-        }
-
-        protected enum ElementFlexebility
-        {
-            rigid, flexibleHeight, flexibleWidth, flexible
         }
     }
 }
