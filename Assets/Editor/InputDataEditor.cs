@@ -1,22 +1,31 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using System;
+using System.Collections.Generic;
 
 namespace Sierra.Unity2D.InputManagement
 {
     [CustomEditor(typeof(InputData))]
     public class InputDataEditor : Editor
     {
-        protected InputData _inputData;
+        
+        protected bool _checkAnyKbInput = false;
         protected Device _device = Device.KeyboardAndMouse;
-        protected KeyType kb_keyType = KeyType.None;
         protected Vector2 _scroll;
-        protected bool _checkAnyKbInput;
+        protected InputData _inputData;
+
+        protected int kb_inputWindowFrames = 5;
+        protected int kb_timer_inputWindow = 0;
+        protected KeyType kb_keyType = KeyType.None;
+        protected KeyCode kb_keyCode = KeyCode.None;
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
 
             _inputData = (InputData)target;
+
+            EditorGUILayout.Toggle(_checkAnyKbInput);
 
             Render_Selection_Device();
             Fork_ByDevice();
@@ -244,13 +253,30 @@ namespace Sierra.Unity2D.InputManagement
         }
         protected void kb_GetAnyKey()
         {
-            Debug.Log("Checking any key");
-            KeyCode keyCodes;
-            /*
-            foreach (KeyCode keyCode in keyCodes)
-            {
+            // Initialize
+            var foundKey = false;
 
-            }*/
+            // Check for input
+            foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
+            {
+                // Ignore the following:
+                if (Event.current.keyCode == KeyCode.Mouse0) continue;
+                if (Event.current.keyCode == KeyCode.None) continue;
+
+                // Store Keycode on match
+                if (Event.current.keyCode == keyCode)
+                {
+                    _inputData.KeyCode = keyCode;
+                    Debug.Log("Setting KeyCode to: " + keyCode);
+                    if (!foundKey) foundKey = true;          
+                }
+            }
+
+            // Keep checking untill a key is found
+            if (!foundKey) return;
+
+            // Reset the method
+            _checkAnyKbInput = false;
         }
 
         protected void Render_ButtonForKey(
