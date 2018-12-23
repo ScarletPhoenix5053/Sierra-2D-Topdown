@@ -3,6 +3,8 @@ using System;
 
 public class InputManager : MonoBehaviour
 {
+    public static InputManager Instance;
+
     public DebugOptions DebugLocal;
     [Serializable]
     public class DebugOptions
@@ -18,7 +20,12 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
+        DoSingletonCheck();
         CheckControllers();
+    }
+    private void OnGUI()
+    {
+        DoSingletonCheck();
     }
 
     private void CheckControllers()
@@ -44,5 +51,10 @@ public class InputManager : MonoBehaviour
             Debug.LogWarning("Did not find any controllers");
         }
         
+    }
+    private void DoSingletonCheck()
+    {
+        if (Instance == null) Instance = this;
+        else { Debug.LogError("A Game Manager instance already exists. Destroying Game Manager attatched to " + name); Destroy(this); }
     }
 }
