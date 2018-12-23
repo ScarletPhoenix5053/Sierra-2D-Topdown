@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        if (InputManager.Attack3) Debug.Log("You pressed it dawg.");
     }
 
     private void DoSingletonCheck()

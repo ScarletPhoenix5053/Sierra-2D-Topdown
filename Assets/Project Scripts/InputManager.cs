@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System;
-using Sierra.Unity2D.InputManagement;
 
 public class InputManager : MonoBehaviour
 {
@@ -12,19 +11,21 @@ public class InputManager : MonoBehaviour
     {
         public bool LogControllers = true;
     }
-    public InputData Input1;
 
     [ReadOnly] public bool ControllerConnected = false;
     [ReadOnly] public int ControllersConnected = 0;
 
     public bool Attack1 {  get { return Input.GetKeyDown(KeyCode.JoystickButton2); } }
     public bool Attack2 {  get { return Input.GetKeyDown(KeyCode.JoystickButton3); } }
-    public bool Attack3 {  get { return Input1.CheckKey(); } }
 
     private void Awake()
     {
         DoSingletonCheck();
         CheckControllers();
+    }
+    private void OnGUI()
+    {
+        DoSingletonCheck();
     }
 
     private void CheckControllers()
